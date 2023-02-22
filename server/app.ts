@@ -1,8 +1,7 @@
 import express from 'express';
 import morgan from 'morgan';
 import { addHsnCode, getHsnCode } from './controllers/hsnController.js';
-
-
+import { errorMiddleware } from './middlewares/errorMiddleware.js';
 
 export const app = express();
 
@@ -17,12 +16,10 @@ app.get('/api/hsn',(req, res) => {
 
 app.post('/api/hsn',(req, res) => {
     addHsnCode(req,res);
-})
+});
 
+app.all('*', (_, __, next) => {
+  next(new Error("This Endpoint doesn't exist"));
+});
 
-
-// app.all('*', (_, __, next) => {
-//   next(new ApiError("This Endpoint doesn't exist", 404));
-// });
-
-// app.use(errorMiddleware);
+app.use(errorMiddleware);
